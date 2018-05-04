@@ -1,5 +1,5 @@
 package com.vaadin.demo.dashboard.view;
-
+ 
 import java.util.Collection;
 
 import com.google.common.eventbus.Subscribe;
@@ -37,8 +37,7 @@ import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.AbstractSelect.AcceptItem;
-import com.vaadin.v7.ui.Table;
+
 
 /**
  * A responsive menu component providing user information and the controls for
@@ -161,24 +160,7 @@ public final class DashboardMenu extends CustomComponent {
                         menuItemComponent);
                 reports.setSizeUndefined();
                 reports.setDragStartMode(DragStartMode.NONE);
-                reports.setDropHandler(new DropHandler() {
 
-                    @Override
-                    public void drop(final DragAndDropEvent event) {
-                        UI.getCurrent().getNavigator().navigateTo(
-                                DashboardViewType.REPORTS.getViewName());
-                        Table table = (Table) event.getTransferable()
-                                .getSourceComponent();
-                        DashboardEventBus.post(new TransactionReportEvent(
-                                (Collection<Transaction>) table.getValue()));
-                    }
-
-                    @Override
-                    public AcceptCriterion getAcceptCriterion() {
-                        return AcceptItem.ALL;
-                    }
-
-                });
                 menuItemComponent = reports;
             }
 

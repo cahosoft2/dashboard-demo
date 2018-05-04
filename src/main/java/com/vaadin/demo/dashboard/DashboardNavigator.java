@@ -34,7 +34,7 @@ public class DashboardNavigator extends Navigator {
         initViewChangeListener();
         initViewProviders();
 
-    }
+    } 
 
     private void initGATracker(final String trackerId) {
         tracker = new GoogleAnalyticsTracker(trackerId, "demo.vaadin.com");

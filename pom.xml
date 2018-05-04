@@ -8,12 +8,13 @@
 
 	<properties>
 		<productionMode>false</productionMode>
-		<vaadin.version>8.0.1</vaadin.version>
+		<vaadin.version>8.4.1</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
+		<jetty.plugin.version>9.3.9.v20160517</jetty.plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
-
+     
 	<repositories>
 		<repository>
 			<id>vaadin-addons</id>
@@ -128,18 +129,7 @@
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-server</artifactId>
 			<version>${vaadin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-compatibility-server</artifactId>
-			<version>${vaadin.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-compatibility-client</artifactId>
-			<version>${vaadin.version}</version>
-			<scope>provided</scope>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-client-compiler</artifactId>
@@ -151,11 +141,7 @@
 			<artifactId>vaadin-themes</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.vaadin.addon</groupId>
-			<artifactId>vaadin-charts</artifactId>
-			<version>4.0.0-alpha4</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.vaadin.addons</groupId>
 			<artifactId>googleanalyticstracker</artifactId>
@@ -233,6 +219,7 @@
 					<compileReport>true</compileReport>
 					<runTarget>http://localhost:8080/</runTarget>
 				</configuration>
+				<!-- 
 				<executions>
 					<execution>
 						<configuration>
@@ -246,6 +233,7 @@
 						</goals>
 					</execution>
 				</executions>
+				 -->
 			</plugin>
 
 			<plugin>
@@ -264,6 +252,18 @@
 					</webResources>
 				</configuration>
 			</plugin>
+			
+			<!-- The Jetty plugin allows us to easily test the development build by
+				running jetty:run on the command line. -->
+			<plugin>
+				<groupId>org.eclipse.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.plugin.version}</version>
+				<configuration>
+					<scanIntervalSeconds>2</scanIntervalSeconds>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 
 		<pluginManagement>

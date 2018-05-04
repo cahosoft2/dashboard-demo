@@ -34,20 +34,13 @@ import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.ui.Calendar;
-import com.vaadin.v7.ui.components.calendar.CalendarComponentEvents.EventClick;
-import com.vaadin.v7.ui.components.calendar.CalendarComponentEvents.EventClickHandler;
-import com.vaadin.v7.ui.components.calendar.CalendarComponentEvents.EventResize;
-import com.vaadin.v7.ui.components.calendar.CalendarComponentEvents.MoveEvent;
-import com.vaadin.v7.ui.components.calendar.event.CalendarEvent;
-import com.vaadin.v7.ui.components.calendar.event.CalendarEventProvider;
-import com.vaadin.v7.ui.components.calendar.handler.BasicEventMoveHandler;
-import com.vaadin.v7.ui.components.calendar.handler.BasicEventResizeHandler;
+
+
 
 @SuppressWarnings("serial")
 public final class ScheduleView extends CssLayout implements View {
 
-    private Calendar calendar;
+
     private final Component tray;
 
     public ScheduleView() {
@@ -105,63 +98,20 @@ public final class ScheduleView extends CssLayout implements View {
         calendarLayout.setCaption("Calendar");
         calendarLayout.setSpacing(false);
 
-        calendar = new Calendar(new MovieEventProvider());
-        calendar.setWidth(100.0f, Unit.PERCENTAGE);
-        calendar.setHeight(1000.0f, Unit.PIXELS);
+       
 
-        calendar.setHandler(new EventClickHandler() {
-            @Override
-            public void eventClick(final EventClick event) {
-                setTrayVisible(false);
-                MovieEvent movieEvent = (MovieEvent) event.getCalendarEvent();
-                MovieDetailsWindow.open(movieEvent.getMovie(),
-                        movieEvent.getStart(), movieEvent.getEnd());
-            }
-        });
-        calendarLayout.addComponent(calendar);
 
-        calendar.setFirstVisibleHourOfDay(11);
-        calendar.setLastVisibleHourOfDay(23);
+      
+    
 
-        calendar.setHandler(new BasicEventMoveHandler() {
-            @Override
-            public void eventMove(final MoveEvent event) {
-                CalendarEvent calendarEvent = event.getCalendarEvent();
-                if (calendarEvent instanceof MovieEvent) {
-                    MovieEvent editableEvent = (MovieEvent) calendarEvent;
-
-                    Date newFromTime = event.getNewStart();
-
-                    // Update event dates
-                    long length = editableEvent.getEnd().getTime()
-                            - editableEvent.getStart().getTime();
-                    setDates(editableEvent, newFromTime,
-                            new Date(newFromTime.getTime() + length));
-                    setTrayVisible(true);
-                }
-            }
-
-            protected void setDates(final MovieEvent event, final Date start,
-                    final Date end) {
-                event.start = start;
-                event.end = end;
-            }
-        });
-        calendar.setHandler(new BasicEventResizeHandler() {
-            @Override
-            public void eventResize(final EventResize event) {
-                Notification.show(
-                        "You're not allowed to change the movie duration");
-            }
-        });
 
         java.util.Calendar initialView = java.util.Calendar.getInstance();
         initialView.add(java.util.Calendar.DAY_OF_WEEK,
                 -initialView.get(java.util.Calendar.DAY_OF_WEEK) + 1);
-        calendar.setStartDate(initialView.getTime());
+
 
         initialView.add(java.util.Calendar.DAY_OF_WEEK, 6);
-        calendar.setEndDate(initialView.getTime());
+
 
         return calendarLayout;
     }
@@ -232,8 +182,9 @@ public final class ScheduleView extends CssLayout implements View {
         discard.addClickListener(close);
         discard.addClickListener(new ClickListener() {
             @Override
-            public void buttonClick(final ClickEvent event) {
-                calendar.markAsDirty();
+            public void buttonClick(final ClickEvent event)
+            {
+       
             }
         });
         tray.addComponent(discard);
@@ -252,8 +203,9 @@ public final class ScheduleView extends CssLayout implements View {
 
     @Subscribe
     public void browserWindowResized(final BrowserResizeEvent event) {
-        if (Page.getCurrent().getBrowserWindowWidth() < 800) {
-            calendar.setEndDate(calendar.getStartDate());
+        if (Page.getCurrent().getBrowserWindowWidth() < 800) 
+        {
+
         }
     }
 
@@ -261,85 +213,7 @@ public final class ScheduleView extends CssLayout implements View {
     public void enter(final ViewChangeEvent event) {
     }
 
-    private class MovieEventProvider implements CalendarEventProvider {
 
-        @Override
-        public List<CalendarEvent> getEvents(final Date startDate,
-                final Date endDate) {
-            // Transactions are dynamically fetched from the backend service
-            // when needed.
-            Collection<Transaction> transactions = DashboardUI.getDataProvider()
-                    .getTransactionsBetween(startDate, endDate);
-            List<CalendarEvent> result = new ArrayList<CalendarEvent>();
-            for (Transaction transaction : transactions) {
-                Movie movie = DashboardUI.getDataProvider()
-                        .getMovie(transaction.getMovieId());
-                Date end = new Date(transaction.getTime().getTime()
-                        + movie.getDuration() * 60 * 1000);
-                result.add(new MovieEvent(transaction.getTime(), end, movie));
-            }
-            return result;
-        }
-    }
 
-    public final class MovieEvent implements CalendarEvent {
-
-        private Date start;
-        private Date end;
-        private Movie movie;
-
-        public MovieEvent(final Date start, final Date end, final Movie movie) {
-            this.start = start;
-            this.end = end;
-            this.movie = movie;
-        }
-
-        @Override
-        public Date getStart() {
-            return start;
-        }
-
-        @Override
-        public Date getEnd() {
-            return end;
-        }
-
-        @Override
-        public String getDescription() {
-            return "";
-        }
-
-        @Override
-        public String getStyleName() {
-            return String.valueOf(movie.getId());
-        }
-
-        @Override
-        public boolean isAllDay() {
-            return false;
-        }
-
-        public Movie getMovie() {
-            return movie;
-        }
-
-        public void setMovie(final Movie movie) {
-            this.movie = movie;
-        }
-
-        public void setStart(final Date start) {
-            this.start = start;
-        }
-
-        public void setEnd(final Date end) {
-            this.end = end;
-        }
-
-        @Override
-        public String getCaption() {
-            return movie.getTitle();
-        }
-
-    }
 
 }

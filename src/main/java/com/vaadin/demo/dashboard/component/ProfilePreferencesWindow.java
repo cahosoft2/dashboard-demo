@@ -35,15 +35,14 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
-import com.vaadin.v7.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.v7.data.fieldgroup.FieldGroup.CommitException;
+
 
 @SuppressWarnings("serial")
 public class ProfilePreferencesWindow extends Window {
 
     public static final String ID = "profilepreferenceswindow";
 
-    private final BeanFieldGroup<User> fieldGroup;
+   
     /*
      * Fields for editing the User object are defined here as class members.
      * They are later bound to a FieldGroup by calling
@@ -66,8 +65,6 @@ public class ProfilePreferencesWindow extends Window {
     @PropertyId("phone")
     private TextField phoneField;
     @PropertyId("newsletterSubscription")
-    private OptionalSelect<Integer> newsletterField;
-    @PropertyId("website")
     private TextField websiteField;
     @PropertyId("bio")
     private TextArea bioField;
@@ -107,9 +104,7 @@ public class ProfilePreferencesWindow extends Window {
 
         content.addComponent(buildFooter());
 
-        fieldGroup = new BeanFieldGroup<User>(User.class);
-        fieldGroup.bindMemberFields(this);
-        fieldGroup.setItemDataSource(user);
+
     }
 
     private Component buildPreferencesTab() {
@@ -197,11 +192,7 @@ public class ProfilePreferencesWindow extends Window {
         phoneField.setWidth("100%");
         details.addComponent(phoneField);
 
-        newsletterField = new OptionalSelect<Integer>();
-        newsletterField.addOption(0, "Daily");
-        newsletterField.addOption(1, "Weekly");
-        newsletterField.addOption(2, "Monthly");
-        details.addComponent(newsletterField);
+
 
         section = new Label("Additional Info");
         section.addStyleName(ValoTheme.LABEL_H4);
@@ -233,7 +224,7 @@ public class ProfilePreferencesWindow extends Window {
             @Override
             public void buttonClick(ClickEvent event) {
                 try {
-                    fieldGroup.commit();
+             
                     // Updated user should also be persisted to database. But
                     // not in this demo.
 
@@ -246,7 +237,7 @@ public class ProfilePreferencesWindow extends Window {
 
                     DashboardEventBus.post(new ProfileUpdatedEvent());
                     close();
-                } catch (CommitException e) {
+                } catch (Exception e) {
                     Notification.show("Error while updating profile",
                             Type.ERROR_MESSAGE);
                 }
